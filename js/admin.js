@@ -1,5 +1,5 @@
 // API Configuration
-
+const API_BASE = 'https://streamplay-gaming.onrender.com';
 const API_URL = `${API_BASE}/api/blogs`;
 const UPLOAD_URL = `${API_BASE}/api/upload`;
 
