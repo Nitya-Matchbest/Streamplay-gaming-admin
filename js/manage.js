@@ -1,5 +1,5 @@
 // API Configuration
-const API_BASE = 'http://localhost:5000';
+const API_BASE = 'https://streamplay-gaming.onrender.com';
 const API_URL = `${API_BASE}/api/blogs`;
 
 let currentPage = 1;
