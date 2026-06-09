@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Admin Panel - StreamPlay</title>
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h1>📝 Blog Admin Panel</h1>
+            <a href="manage.html" class="btn btn-secondary" style="text-decoration: none;">📚 Manage Blogs</a>
+        </div>
+        <p class="subtitle">Add new blog posts to StreamPlay</p>
+
+        <div class="success-message" id="successMessage">
+            ✅ Blog created successfully! <a href="#" onclick="window.location.reload()">Add another</a>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+
+        <form id="blogForm">
+            <!-- Basic Info -->
+            <div class="form-group">
+                <label>Title <span class="required">*</span></label>
+                <input type="text" id="title" name="title" required maxlength="200" placeholder="Enter blog title">
+                <div class="char-count"><span id="titleCount">0</span>/200 characters</div>
+            </div>
+
+            <div class="form-group">
+                <label>Excerpt <span class="required">*</span></label>
+                <textarea id="excerpt" name="excerpt" required maxlength="300" placeholder="Brief description of the blog (shown on cards)"></textarea>
+                <div class="char-count"><span id="excerptCount">0</span>/300 characters</div>
+            </div>
+
+            <div class="form-group">
+                <label>Category <span class="required">*</span></label>
+                <select id="category" name="category" required>
+                    <option value="">Select a category</option>
+                    <option value="Latest Article">Latest Article</option>
+                    <option value="Consumption">Consumption</option>
+                    <option value="Technology">Technology</option>
+                    <option value="OTT Trends">OTT Trends</option>
+                    <option value="Entertainment">Entertainment</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Featured Image <span class="required">*</span></label>
+                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <input type="file" id="imageFile" accept="image/*" style="display: none;">
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('imageFile').click()" style="flex: 0 0 auto;">
+                        📁 Choose Image
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="uploadImage()" id="uploadBtn" style="flex: 0 0 auto;" disabled>
+                        ⬆️ Upload
+                    </button>
+                    <span id="uploadStatus" style="display: flex; align-items: center; color: #666; font-size: 14px;"></span>
+                </div>
+                <input type="text" id="featuredImage" name="featuredImage" required placeholder="Image URL will appear here after upload" readonly style="background: #f5f5f5;">
+                <div class="help-text">Upload an image from your computer (Max 5MB, JPEG/PNG/GIF/WebP)</div>
+                <div id="imagePreview" style="margin-top: 10px; display: none;">
+                    <img id="previewImg" style="max-width: 300px; max-height: 200px; border-radius: 8px; border: 2px solid #e0e0e0;">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Meta Description</label>
+                <textarea id="metaDescription" name="metaDescription" maxlength="160" placeholder="SEO description (optional, max 160 characters)"></textarea>
+                <div class="char-count"><span id="metaCount">0</span>/160 characters</div>
+            </div>
+
+            <div class="form-group">
+                <label>Tags</label>
+                <div class="tags-input" id="tagsContainer">
+                    <input type="text" class="tag-input" id="tagInput" placeholder="Type tag and press Enter">
+                </div>
+                <div class="help-text">Press Enter to add each tag</div>
+            </div>
+
+            <!-- Content Sections -->
+            <div class="form-group">
+                <label>Content Sections <span class="required">*</span></label>
+                <div class="sections-container" id="sectionsContainer">
+                    <!-- Sections will be added here by JavaScript -->
+                </div>
+                <button type="button" class="btn btn-secondary" onclick="addSection()">
+                    ➕ Add Section
+                </button>
+            </div>
+
+            <!-- Submit Buttons -->
+            <div class="button-group">
+                <button type="submit" class="btn btn-primary">
+                    💾 Create Blog Post
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="previewBlog()">
+                    👁️ Preview
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>

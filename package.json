@@ -1,0 +1,16 @@
+{
+  "name": "streamplay-admin",
+  "version": "1.0.0",
+  "description": "StreamPlay Admin Panel - Blog Management",
+  "scripts": {
+    "dev": "npx http-server -p 3001 -o",
+    "start": "npx http-server -p 3001"
+  },
+  "keywords": [
+    "admin",
+    "blog",
+    "streamplay"
+  ],
+  "author": "",
+  "license": "ISC"
+}
