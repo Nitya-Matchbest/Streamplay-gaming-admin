@@ -239,6 +239,24 @@ textarea {
     margin-top: 5px;
 }
 
+.upload-btn-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.upload-btn-container .btn {
+    flex: 0 0 auto;
+}
+
+#uploadStatus {
+    display: flex;
+    align-items: center;
+    color: #666;
+    font-size: 14px;
+}
+
 @media (max-width: 768px) {
     .container {
         padding: 20px;
@@ -255,5 +273,20 @@ textarea {
     .btn {
         width: 100%;
         justify-content: center;
+    }
+
+    .upload-btn-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .upload-btn-container .btn {
+        flex: none;
+        width: 100%;
+    }
+
+    .upload-btn-container #uploadStatus {
+        justify-content: center;
+        margin-top: 5px;
     }
 }

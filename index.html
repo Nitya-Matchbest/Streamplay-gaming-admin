@@ -48,15 +48,15 @@
 
             <div class="form-group">
                 <label>Featured Image <span class="required">*</span></label>
-                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                <div class="upload-btn-container">
                     <input type="file" id="imageFile" accept="image/*" style="display: none;">
-                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('imageFile').click()" style="flex: 0 0 auto;">
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('imageFile').click()">
                         📁 Choose Image
                     </button>
-                    <button type="button" class="btn btn-primary" onclick="uploadImage()" id="uploadBtn" style="flex: 0 0 auto;" disabled>
+                    <button type="button" class="btn btn-primary" onclick="uploadImage()" id="uploadBtn" disabled>
                         ⬆️ Upload
                     </button>
-                    <span id="uploadStatus" style="display: flex; align-items: center; color: #666; font-size: 14px;"></span>
+                    <span id="uploadStatus"></span>
                 </div>
                 <input type="text" id="featuredImage" name="featuredImage" required placeholder="Image URL will appear here after upload" readonly style="background: #f5f5f5;">
                 <div class="help-text">Upload an image from your computer (Max 5MB, JPEG/PNG/GIF/WebP)</div>
