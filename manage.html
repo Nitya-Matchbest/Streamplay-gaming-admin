@@ -8,13 +8,23 @@
     <link rel="stylesheet" href="css/manage.css">
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>📚 Manage Blogs</h1>
-            <div class="nav-buttons">
-                <a href="index.html" class="btn btn-secondary">➕ Create New Blog</a>
-            </div>
+    <div class="admin-wrapper">
+        <div class="admin-sidebar">
+            <h3>Navigation</h3>
+            <ul class="sidebar-nav">
+                <li><a href="index.html">Add Blog</a></li>
+                <li><a href="manage.html" class="active">Manage Blogs</a></li>
+                <li><a href="add-testimonial.html">Add Testimonial</a></li>
+                <li><a href="manage-testimonials.html">Manage Testimonials</a></li>
+            </ul>
         </div>
+        <div class="container">
+            <div class="header">
+                <h1>📝 Manage Blogs</h1>
+                <div class="nav-buttons">
+                    <a href="index.html" class="btn btn-secondary">➕ Create New Blog</a>
+                </div>
+            </div>
         
         <div class="subtitle">View, edit, and delete existing blog posts</div>
 
@@ -114,7 +124,7 @@
             </div>
         </div>
     </div>
-
-    <script src="js/manage.js?v=2"></script>
+    </div>
+    <script src="js/manage.js"></script>
 </body>
 </html>

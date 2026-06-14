@@ -7,11 +7,20 @@
     <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
-    <div class="container">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <h1>📝 Blog Admin Panel</h1>
-            <a href="manage.html" class="btn btn-secondary" style="text-decoration: none;">📚 Manage Blogs</a>
+    <div class="admin-wrapper">
+        <div class="admin-sidebar">
+            <h3>Navigation</h3>
+            <ul class="sidebar-nav">
+                <li><a href="index.html" class="active">Add Blog</a></li>
+                <li><a href="manage.html">Manage Blogs</a></li>
+                <li><a href="add-testimonial.html">Add Testimonial</a></li>
+                <li><a href="manage-testimonials.html">Manage Testimonials</a></li>
+            </ul>
         </div>
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h1>📝 Add Blog</h1>
+            </div>
         <p class="subtitle">Add new blog posts to StreamPlay</p>
 
         <div class="success-message" id="successMessage">
@@ -101,7 +110,7 @@
             </div>
         </form>
     </div>
-
+    </div>
     <script src="js/admin.js"></script>
 </body>
 </html>

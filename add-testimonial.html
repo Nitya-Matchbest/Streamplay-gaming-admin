@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Testimonial - StreamPlay</title>
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="admin-wrapper">
+        <div class="admin-sidebar">
+            <h3>Navigation</h3>
+            <ul class="sidebar-nav">
+                <li><a href="index.html">Add Blog</a></li>
+                <li><a href="manage.html">Manage Blogs</a></li>
+                <li><a href="add-testimonial.html" class="active">Add Testimonial</a></li>
+                <li><a href="manage-testimonials.html">Manage Testimonials</a></li>
+            </ul>
+        </div>
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h1>💬 Add Testimonial</h1>
+            </div>
+            <p class="subtitle">Add new customer testimonials to StreamPlay</p>
+
+            <div class="success-message" id="successMessage" style="display: none;">
+                ✅ Testimonial created successfully! <a href="#" onclick="window.location.reload()">Add another</a>
+            </div>
+
+            <div class="error-message" id="errorMessage" style="display: none;"></div>
+
+            <form id="testimonialForm">
+                <div class="form-group">
+                    <label>Author Name <span class="required">*</span></label>
+                    <input type="text" id="authorName" name="authorName" required maxlength="100" placeholder="e.g. Marcus Chen">
+                </div>
+
+                <div class="form-group">
+                    <label>Author Role <span class="required">*</span></label>
+                    <input type="text" id="authorRole" name="authorRole" required maxlength="100" placeholder="e.g. CTO, Horizon Gaming Network">
+                </div>
+
+                <div class="form-group">
+                    <label>Quote <span class="required">*</span></label>
+                    <textarea id="quote" name="quote" required maxlength="500" placeholder="The testimonial text"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Stars <span class="required">*</span></label>
+                    <input type="number" id="stars" name="stars" min="1" max="5" value="5" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Author Image <span class="required">*</span></label>
+                    <div class="upload-btn-container">
+                        <input type="file" id="imageFile" accept="image/*" style="display: none;">
+                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('imageFile').click()">
+                            📁 Choose Image
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="uploadImage()" id="uploadBtn" disabled>
+                            ⬆️ Upload
+                        </button>
+                        <span id="uploadStatus"></span>
+                    </div>
+                    <input type="text" id="authorImage" name="authorImage" required placeholder="Image URL will appear here after upload" readonly style="background: #f5f5f5;">
+                    <div class="help-text">Upload an image from your computer (Max 5MB, JPEG/PNG/GIF/WebP)</div>
+                    <div id="imagePreview" style="margin-top: 10px; display: none;">
+                        <img id="previewImg" style="max-width: 150px; max-height: 150px; border-radius: 8px; border: 2px solid #e0e0e0;">
+                    </div>
+                </div>
+
+                <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="isFeatured" name="isFeatured" style="width: auto;">
+                    <label for="isFeatured" style="margin-bottom: 0;">Featured Testimonial</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="submitBtn">Save Testimonial</button>
+            </form>
+        </div>
+    <script>
+        // Configuration
+        const API_BASE = 'https://streamplay-gaming.onrender.com';
+        const UPLOAD_URL = `${API_BASE}/api/upload`;
+
+        document.getElementById('imageFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('uploadBtn').disabled = false;
+                document.getElementById('uploadStatus').textContent = `Selected: ${file.name}`;
+                document.getElementById('uploadStatus').style.color = '#667eea';
+            } else {
+                document.getElementById('uploadBtn').disabled = true;
+                document.getElementById('uploadStatus').textContent = '';
+            }
+        });
+
+        async function uploadImage() {
+            const fileInput = document.getElementById('imageFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Please select an image first');
+                return;
+            }
+
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File size must be less than 5MB');
+                return;
+            }
+
+            const uploadBtn = document.getElementById('uploadBtn');
+            const uploadStatus = document.getElementById('uploadStatus');
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = '⏳ Uploading...';
+            uploadStatus.textContent = 'Uploading...';
+            uploadStatus.style.color = '#f39c12';
+
+            try {
+                const formData = new FormData();
+                formData.append('image', file);
+
+                const response = await fetch(UPLOAD_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    document.getElementById('authorImage').value = result.data.url;
+                    
+                    const preview = document.getElementById('imagePreview');
+                    const previewImg = document.getElementById('previewImg');
+                    previewImg.src = API_BASE + result.data.url;
+                    preview.style.display = 'block';
+                    
+                    uploadStatus.textContent = '✅ Uploaded successfully!';
+                    uploadStatus.style.color = '#27ae60';
+                    uploadBtn.textContent = '✅ Uploaded';
+                    
+                    setTimeout(() => {
+                        uploadBtn.textContent = '⬆️ Upload';
+                        uploadStatus.textContent = result.data.filename;
+                    }, 3000);
+                } else {
+                    throw new Error(result.message || 'Upload failed');
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                uploadStatus.textContent = '❌ Upload failed';
+                uploadStatus.style.color = '#e74c3c';
+                uploadBtn.textContent = '⬆️ Upload';
+                uploadBtn.disabled = false;
+                alert('Failed to upload image: ' + error.message);
+            }
+        }
+
+        document.getElementById('testimonialForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submitBtn');
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Saving...';
+            successMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+
+            let imageUrl = document.getElementById('authorImage').value;
+            if (imageUrl && !imageUrl.startsWith('http')) {
+                imageUrl = API_BASE + imageUrl;
+            }
+
+            const data = {
+                authorName: document.getElementById('authorName').value,
+                authorRole: document.getElementById('authorRole').value,
+                quote: document.getElementById('quote').value,
+                stars: document.getElementById('stars').value,
+                authorImage: imageUrl,
+                isFeatured: document.getElementById('isFeatured').checked
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/api/testimonials`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    successMessage.style.display = 'block';
+                    document.getElementById('testimonialForm').reset();
+                    document.getElementById('imagePreview').style.display = 'none';
+                    document.getElementById('uploadStatus').textContent = '';
+                } else {
+                    throw new Error(result.message || 'Error creating testimonial');
+                }
+            } catch (error) {
+                errorMessage.textContent = error.message;
+                errorMessage.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Save Testimonial';
+            }
+        });
+    </script>
+</body>
+</html>
