@@ -5,7 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Testimonials - StreamPlay Admin</title>
     <link rel="stylesheet" href="css/admin.css">
-    <link rel="stylesheet" href="css/manage.css">
+    <link rel="stylesheet" href="css/manage.css?v=1781507176897">
+
+    <style>
+        .btn-edit { background-color: #3498db; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 14px; transition: background-color 0.2s; }
+        .btn-edit:hover { background-color: #2980b9; }
+        .btn-delete { background-color: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 14px; transition: background-color 0.2s; }
+        .btn-delete:hover { background-color: #c0392b; }
+        .btn-secondary { background-color: #95a5a6; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; }
+        .btn-secondary:hover { background-color: #7f8c8d; }
+    </style>
 </head>
 <body>
     <div class="admin-wrapper">
@@ -70,8 +79,16 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Author Image URL</label>
-                        <input type="text" id="editAuthorImage" required>
+                        <label>Author Image</label>
+                        <div class="image-upload-wrapper" style="display: flex; gap: 10px; align-items: center;">
+                            <input type="hidden" id="editAuthorImage" required>
+                            <input type="file" id="editImageFile" accept="image/*" style="display: none;">
+                            <button type="button" class="btn btn-secondary" id="editUploadBtn" onclick="document.getElementById('editImageFile').click()">Replace Image</button>
+                            <span id="editUploadStatus" style="font-size: 14px;"></span>
+                        </div>
+                        <div id="editImagePreview" style="margin-top: 10px; display: none;">
+                            <img id="editPreviewImg" src="" alt="Preview" style="max-width: 100px; max-height: 100px; border-radius: 4px; border: 1px solid #ddd; object-fit: cover;">
+                        </div>
                     </div>
                     
                     <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
@@ -89,12 +106,12 @@
     </div>
 
     <script>
+        const API_BASE = 'https://streamplay-gaming.onrender.com';
+
         document.addEventListener('DOMContentLoaded', fetchTestimonials);
 
         async function fetchTestimonials() {
             try {
-                // Configuration
-                const API_BASE = 'https://streamplay-gaming.onrender.com';
                 const response = await fetch(`${API_BASE}/api/testimonials`);
                 const result = await response.json();
                 if (result.success) {
@@ -140,6 +157,15 @@
             document.getElementById('editAuthorImage').value = testimonial.authorImage;
             document.getElementById('editIsFeatured').checked = testimonial.isFeatured;
             
+            if (testimonial.authorImage) {
+                const imgUrl = testimonial.authorImage.startsWith('http') ? testimonial.authorImage : API_BASE + testimonial.authorImage;
+                document.getElementById('editPreviewImg').src = imgUrl;
+                document.getElementById('editImagePreview').style.display = 'block';
+            } else {
+                document.getElementById('editImagePreview').style.display = 'none';
+            }
+            document.getElementById('editUploadStatus').textContent = '';
+            
             modal.style.display = 'flex';
         }
 
@@ -149,6 +175,55 @@
 
         closeBtn.onclick = closeModal;
         cancelBtn.onclick = closeModal;
+
+        // Edit Modal Image Upload Logic
+        document.getElementById('editImageFile').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const uploadBtn = document.getElementById('editUploadBtn');
+            const uploadStatus = document.getElementById('editUploadStatus');
+
+            uploadBtn.disabled = true;
+            uploadStatus.textContent = 'Uploading...';
+            uploadStatus.style.color = '#f39c12';
+
+            try {
+                const formData = new FormData();
+                formData.append('image', file);
+
+                const response = await fetch(`${API_BASE}/api/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    document.getElementById('editAuthorImage').value = result.data.url;
+                    
+                    const previewImg = document.getElementById('editPreviewImg');
+                    previewImg.src = API_BASE + result.data.url;
+                    document.getElementById('editImagePreview').style.display = 'block';
+                    
+                    uploadStatus.textContent = '✅ Uploaded successfully!';
+                    uploadStatus.style.color = '#27ae60';
+                    
+                    setTimeout(() => {
+                        uploadStatus.textContent = '';
+                    }, 3000);
+                } else {
+                    throw new Error(result.message || 'Upload failed');
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                uploadStatus.textContent = '❌ Upload failed';
+                uploadStatus.style.color = '#e74c3c';
+                alert('Failed to upload image: ' + error.message);
+            } finally {
+                uploadBtn.disabled = false;
+            }
+        });
 
         // Save Edit
         document.getElementById('editForm').addEventListener('submit', async (e) => {
@@ -173,9 +248,12 @@
                     closeModal();
                     fetchTestimonials();
                     showSuccess('Testimonial updated successfully');
+                } else {
+                    const result = await response.json();
+                    alert('Error updating testimonial: ' + (result.message || response.statusText));
                 }
             } catch (error) {
-                alert('Error updating testimonial');
+                alert('Error updating testimonial: ' + error.message);
             }
         });
 
